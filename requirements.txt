@@ -5,7 +5,7 @@ openai
 streamlit
 numpy
 pandas
-tensorflow
+tensorflow==2.9
 seaborn
 matplotlib
 scikit-learn

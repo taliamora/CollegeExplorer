@@ -5,6 +5,7 @@ from io import StringIO
 import requests
 import json
 import pickle
+from tensorflow.keras.models import load_model
 import RateMyProfessor.rmp_api
 from RateMyProfessor.rmp_api import get_schools_reviews, get_uni_by_name
 from DataPrep import PreProcess, prep_data
@@ -43,7 +44,7 @@ client = OpenAI()
 
 # Load Models
 Tokenizer = pickle.load(open("SentimentAnalysis/SentimentAnalysisTokenizer.pkl", 'rb'))
-SentimentModel = pickle.load(open("SentimentAnalysis/SentimentAnalysisModel.pkl", 'rb'))
+SentimentModel = load_model("SentimentAnalysis/best_model.h5")
 
 # Streamlit title
 #def main_page():

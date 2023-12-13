@@ -38,6 +38,7 @@ if "edflg" not in st.session_state:
 pref = pd.read_csv("preference_key.csv")
 
 # Connect to OpenAI
+os.environ['OPENAI_API_KEY'] = st.secretes['OPENAI_API_KEY']
 client = OpenAI()
 
 # Load Models
@@ -186,7 +187,7 @@ def get_Recommendations():
             elif values == True:
                 query_vals = "1"
             QUERY += param+"="+query_vals+"&"
-    KEY = os.getenv("SCORECARD_API_KEY")
+    KEY = st.secretes['SCORECARD_API_KEY']
     CollegeScorecardAPI = f"https://api.data.gov/ed/collegescorecard/v1/schools.json?{QUERY}fields=school.name&api_key={KEY}"
     #CollegeScorecardAPI
     cs_data = requests.get(CollegeScorecardAPI)

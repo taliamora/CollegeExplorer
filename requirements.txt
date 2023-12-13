@@ -2,7 +2,7 @@ requests
 beautifulsoup4
 lxml
 openai
-streamlit
+streamlit==1.29.0
 numpy
 pandas
 tensorflow==2.11.0

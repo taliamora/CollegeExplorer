@@ -44,7 +44,7 @@ client = OpenAI()
 
 # Load Models
 Tokenizer = pickle.load(open("SentimentAnalysis/SentimentAnalysisTokenizer.pkl", 'rb'))
-SentimentModel = load_model("SentimentAnalysis/best_model.h5")
+SentimentModel = load_model("SentimentAnalysis/best_model.h5", compile=False)
 
 # Streamlit title
 #def main_page():

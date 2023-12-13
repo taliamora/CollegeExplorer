@@ -4,6 +4,7 @@ import numpy as np
 from io import StringIO
 import requests
 import json
+from tensorflow import keras
 import pickle
 import RateMyProfessor.rmp_api
 from RateMyProfessor.rmp_api import get_schools_reviews, get_uni_by_name

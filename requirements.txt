@@ -5,11 +5,10 @@ openai
 streamlit
 numpy
 pandas
-tensorflow==2.9
-protobuf==3.20.*
+tensorflow==2.11.0
 seaborn
 matplotlib
 scikit-learn
-keras
+
 
 

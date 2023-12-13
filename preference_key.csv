@@ -1,0 +1,150 @@
+﻿Meaning,CAT,QUERY_PARAM,APP_PARAM,DTYPE,VAR,VALUE,LABEL
+What type of degree are you seeking?,school,school.degrees_awarded.highest,select_degree,integer,HIGHDEG,0,No Degree
+What type of degree are you seeking?,school,school.degrees_awarded.highest,,,HIGHDEG,1,Certificate degree
+What type of degree are you seeking?,school,school.degrees_awarded.highest,,,HIGHDEG,2,Associate degree
+What type of degree are you seeking?,school,school.degrees_awarded.highest,,,HIGHDEG,3,Bachelor's degree
+What type of degree are you seeking?,school,school.degrees_awarded.highest,,,HIGHDEG,4,Graduate degree
+Type of Institution,school,school.ownership,select_control,integer,CONTROL,1,Public
+Type of Institution,school,school.ownership,,,CONTROL,2,Private nonprofit
+Type of Institution,school,school.ownership,,,CONTROL,3,Private for-profit
+Location (state),school,school.state_fips,select_states,integer,ST_FIPS,1,Alabama
+Location (state),school,school.state_fips,,,ST_FIPS,2,Alaska
+Location (state),school,school.state_fips,,,ST_FIPS,4,Arizona
+Location (state),school,school.state_fips,,,ST_FIPS,5,Arkansas
+Location (state),school,school.state_fips,,,ST_FIPS,6,California
+Location (state),school,school.state_fips,,,ST_FIPS,8,Colorado
+Location (state),school,school.state_fips,,,ST_FIPS,9,Connecticut
+Location (state),school,school.state_fips,,,ST_FIPS,10,Delaware
+Location (state),school,school.state_fips,,,ST_FIPS,11,District of Columbia
+Location (state),school,school.state_fips,,,ST_FIPS,12,Florida
+Location (state),school,school.state_fips,,,ST_FIPS,13,Georgia
+Location (state),school,school.state_fips,,,ST_FIPS,15,Hawaii
+Location (state),school,school.state_fips,,,ST_FIPS,16,Idaho
+Location (state),school,school.state_fips,,,ST_FIPS,17,Illinois
+Location (state),school,school.state_fips,,,ST_FIPS,18,Indiana
+Location (state),school,school.state_fips,,,ST_FIPS,19,Iowa
+Location (state),school,school.state_fips,,,ST_FIPS,20,Kansas
+Location (state),school,school.state_fips,,,ST_FIPS,21,Kentucky
+Location (state),school,school.state_fips,,,ST_FIPS,22,Louisiana
+Location (state),school,school.state_fips,,,ST_FIPS,23,Maine
+Location (state),school,school.state_fips,,,ST_FIPS,24,Maryland
+Location (state),school,school.state_fips,,,ST_FIPS,25,Massachusetts
+Location (state),school,school.state_fips,,,ST_FIPS,26,Michigan
+Location (state),school,school.state_fips,,,ST_FIPS,27,Minnesota
+Location (state),school,school.state_fips,,,ST_FIPS,28,Mississippi
+Location (state),school,school.state_fips,,,ST_FIPS,29,Missouri
+Location (state),school,school.state_fips,,,ST_FIPS,30,Montana
+Location (state),school,school.state_fips,,,ST_FIPS,31,Nebraska
+Location (state),school,school.state_fips,,,ST_FIPS,32,Nevada
+Location (state),school,school.state_fips,,,ST_FIPS,33,New Hampshire
+Location (state),school,school.state_fips,,,ST_FIPS,34,New Jersey
+Location (state),school,school.state_fips,,,ST_FIPS,35,New Mexico
+Location (state),school,school.state_fips,,,ST_FIPS,36,New York
+Location (state),school,school.state_fips,,,ST_FIPS,37,North Carolina
+Location (state),school,school.state_fips,,,ST_FIPS,38,North Dakota
+Location (state),school,school.state_fips,,,ST_FIPS,39,Ohio
+Location (state),school,school.state_fips,,,ST_FIPS,40,Oklahoma
+Location (state),school,school.state_fips,,,ST_FIPS,41,Oregon
+Location (state),school,school.state_fips,,,ST_FIPS,42,Pennsylvania
+Location (state),school,school.state_fips,,,ST_FIPS,44,Rhode Island
+Location (state),school,school.state_fips,,,ST_FIPS,45,South Carolina
+Location (state),school,school.state_fips,,,ST_FIPS,46,South Dakota
+Location (state),school,school.state_fips,,,ST_FIPS,47,Tennessee
+Location (state),school,school.state_fips,,,ST_FIPS,48,Texas
+Location (state),school,school.state_fips,,,ST_FIPS,49,Utah
+Location (state),school,school.state_fips,,,ST_FIPS,50,Vermont
+Location (state),school,school.state_fips,,,ST_FIPS,51,Virginia
+Location (state),school,school.state_fips,,,ST_FIPS,53,Washington
+Location (state),school,school.state_fips,,,ST_FIPS,54,West Virginia
+Location (state),school,school.state_fips,,,ST_FIPS,55,Wisconsin
+Location (state),school,school.state_fips,,,ST_FIPS,56,Wyoming
+Location (state),school,school.state_fips,,,ST_FIPS,60,American Samoa
+Location (state),school,school.state_fips,,,ST_FIPS,64,Federated States of Micronesia
+Location (state),school,school.state_fips,,,ST_FIPS,66,Guam
+Location (state),school,school.state_fips,,,ST_FIPS,69,Northern Mariana Islands
+Location (state),school,school.state_fips,,,ST_FIPS,70,Palau
+Location (state),school,school.state_fips,,,ST_FIPS,72,Puerto Rico
+Location (state),school,school.state_fips,,,ST_FIPS,78,Virgin Islands
+"Location Type (city, suburban, rural, etc)",school,school.locale,select_region,integer,LOCALE,"11,12,13",City
+-,school,school.locale,,,LOCALE,"21,22,23",Suburb
+,,school.locale,,,LOCALE,"31,32,33",Town
+-,school,school.locale,,,LOCALE,"41,42,43",Rural
+Historically Black College and University,school,school.minority_serving.historically_black,black_serving,integer,HBCU,1,Yes
+Alaska Native Native Hawaiian serving institution,school,school.minority_serving.annh,ALHI_serving,integer,ANNHI,1,Yes
+tribal college and university,school,school.minority_serving.tribal,tribal_serving,integer,TRIBAL,1,Yes
+ Asian American Native American Pacific Islander-serving institution,school,school.minority_serving.aanipi,AANHPI_serving,integer,AANAPII,1,Yes
+Hispanic-serving institution,school,school.minority_serving.hispanic,hispanic_serving,integer,HSI,1,Yes
+Native American non-tribal institution,school,school.minority_serving.nant,native_serving,integer,NANTI,1,Yes
+Men-Only ,school,school.men_only,men_toggle,integer,MENONLY,1,Yes
+Women Only,school,school.women_only,women_toggle,integer,WOMENONLY,1,Yes
+Religiously affilitated,school,school.religious_affiliation,select_religion,integer,RELAFFIL,22,American Evangelical Lutheran Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,24,African Methodist Episcopal Zion Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,27,Assemblies of God Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,28,Brethren Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,30,Roman Catholic
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,33,Wisconsin Evangelical Lutheran Synod
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,34,Christ and Missionary Alliance Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,35,Christian Reformed Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,36,Evangelical Congregational Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,37,Evangelical Covenant Church of America
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,38,Evangelical Free Church of America
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,39,Evangelical Lutheran Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,40,International United Pentecostal Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,41,Free Will Baptist Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,42,Interdenominational
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,43,Mennonite Brethren Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,44,Moravian Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,45,North American Baptist
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,47,Pentecostal Holiness Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,48,Christian Churches and Churches of Christ
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,49,Reformed Church in America
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,50,"Episcopal Church, Reformed"
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,51,African Methodist Episcopal
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,52,American Baptist
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,53,American Lutheran
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,54,Baptist
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,55,Christian Methodist Episcopal
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,57,Church of God
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,58,Church of Brethren
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,59,Church of the Nazarene
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,60,Cumberland Presbyterian
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,61,Christian Church (Disciples of Christ)
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,64,Free Methodist
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,65,Friends
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,66,Presbyterian Church (USA)
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,67,Lutheran Church in America
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,68,Lutheran Church - Missouri Synod
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,69,Mennonite Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,71,United Methodist
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,73,Protestant Episcopal
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,74,Churches of Christ
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,75,Southern Baptist
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,76,United Church of Christ
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,77,"Protestant, not specified"
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,78,Multiple Protestant Denomination
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,79,Other Protestant
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,80,Jewish
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,81,Reformed Presbyterian Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,84,United Brethren Church
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,87,Missionary Church Inc
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,88,Undenominational
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,89,Wesleyan
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,91,Greek Orthodox
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,92,Russian Orthodox
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,93,Unitarian Universalist
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,94,Latter Day Saints (Mormon Church)
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,95,Seventh Day Adventists
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,97,The Presbyterian Church in America
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,99,Other (none of the above)
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,100,Original Free Will Baptist
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,101,Ecumenical Christian
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,102,Evangelical Christian
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,103,Presbyterian
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,105,General Baptist
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,106,Muslim
+Religiously affilitated,,school.religious_affiliation,,,RELAFFIL,107,Plymouth Brethren
+Admission Rate Range,admissions,admissions.admission_rate.overall,admission,float,ADM_RATE,,
+Average SAT Score of admitted students/ What's your SAT score?,admissions,admissions.sat_scores.average.overall,sat,float,SAT_AVG,,
+ALWAYS QUERY THIS AS == 1,school,school.operating,,integer,CURROPER,0,Not currently certified as an operating institution
+Average net price for Title IV institutions (public institutions),cost,cost.avg_net_price.public,cost_pub,integer,NPT4_PUB,,
+Average net price for Title IV institutions (private for-profit and nonprofit institutions),cost,cost.avg_net_price.private,cost_priv,integer,NPT4_PRIV,,

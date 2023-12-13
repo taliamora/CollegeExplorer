@@ -1,0 +1,4 @@
+{
+  "query": "query GetSchoolById($id: ID!) {node(id: $id) {... on School {id legacyId name city state numRatings departments {id name}}}}",
+  "variables": {}
+}

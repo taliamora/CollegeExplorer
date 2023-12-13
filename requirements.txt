@@ -9,6 +9,6 @@ tensorflow==2.9
 seaborn
 matplotlib
 scikit-learn
-pickle
+keras
 
 

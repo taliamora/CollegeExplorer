@@ -8,8 +8,8 @@ numpy
 pandas
 tensorflow
 functools
-seaborn=0.13.0
-matplotlib=3.7.2
+seaborn
+matplotlib
 scikit-learn
 
 

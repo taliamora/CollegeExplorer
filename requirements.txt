@@ -3,11 +3,9 @@ beautifulsoup4
 lxml
 openai
 streamlit
-io
 numpy
 pandas
 tensorflow
-functools
 seaborn
 matplotlib
 scikit-learn

@@ -35,6 +35,8 @@ The following (low fidelity) diagram shows the pipeline:
 
 ![IMG_0381](https://github.com/taliamora/CollegeExplorer/assets/97256085/e348ffe9-3297-4a38-91c8-063ed6baf669)
 
+### Data Warehouse Data Model
+![Database ER diagram (crow's foot) (2)](https://github.com/taliamora/CollegeExplorer/assets/97256085/e3f04423-13d5-4a07-9d1c-dc060e80860b)
 
 _NOTE: The Sentiment Analysis LSTM was trained using FastText embeddings, however the vector file is substantially large and therefore was excluded from this project repo. The original vectors can be downloaded directly here:
 https://fasttext.cc/docs/en/english-vectors.html_

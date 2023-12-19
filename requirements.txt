@@ -10,4 +10,4 @@ seaborn
 matplotlib
 scikit-learn
 google-cloud-bigquery
-
+transformers

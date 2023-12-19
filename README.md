@@ -20,7 +20,6 @@ To explore the system in greater detail, check out the full project exploration 
 ![IMG_0380](https://github.com/taliamora/CollegeExplorer/assets/97256085/ca13ee4b-9694-46d0-8538-37bec97ca7a4)
 
 
-## Data Pipeline
 ![IMG_0381](https://github.com/taliamora/CollegeExplorer/assets/97256085/e348ffe9-3297-4a38-91c8-063ed6baf669)
 
 

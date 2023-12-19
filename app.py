@@ -4,7 +4,6 @@ import numpy as np
 from io import StringIO
 import requests
 import json
-
 import os
 from openai import OpenAI
 from google.cloud import bigquery
@@ -18,8 +17,6 @@ if 'message' not in st.session_state:
 if 'edited_df' not in st.session_state:
     st.session_state.edited_df = pd.DataFrame()
 
-if 'NN_status' not in st.session_state:
-    st.session_state.NN_status = "- - -"
 
 if 'selected_list' not in st.session_state:
     st.session_state.selected_list = []
@@ -42,19 +39,16 @@ if "cost_flag" not in st.session_state:
 pref = pd.read_csv("preference_key.csv")
 
 ### GET SECRET ENVIRONMENT VARIABLES
-KEY = 'kiAstPJVUqbuRNL9czkNqb18NWY0Rb3e7zK6slpq' #st.secrets['SCORECARD_API_KEY']
+KEY = st.secrets['SCORECARD_API_KEY']
 
 # Connect to OpenAI
-os.environ['OPENAI_API_KEY'] = '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' #st.secrets['OPENAI_API_KEY']
+os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 OpenAI_client = OpenAI()
 
 # Connect to BigQuery Warehouse
-credentials = service_account.Credentials.from_service_account_file('Keys/BigQuery_ServiceKey.json') #(st.secrets['SERVICE_ACCOUNT_KEY'])
-GCP_client = bigquery.Client(credentials=credentials, project=credentials.project_id)
+credentials = service_account.Credentials.from_service_account_info(st.secrets['SERVICE_ACCOUNT_KEY'])
+GCP_client = bigquery.Client(credentials=credentials)
 
-# Load Models
-#Tokenizer = pickle.load(open("SentimentAnalysis/SentimentAnalysisTokenizer.pkl", 'rb')) ####
-#SentimentModel = load_model("SentimentAnalysis/best_model.h5") ####
 
 # Streamlit title
 #def main_page():

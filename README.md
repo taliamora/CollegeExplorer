@@ -19,6 +19,19 @@ To explore the system in greater detail, check out the full project exploration 
 ## System Overview
 ![IMG_0380](https://github.com/taliamora/CollegeExplorer/assets/97256085/ca13ee4b-9694-46d0-8538-37bec97ca7a4)
 
+The College Explorer web app uses both data warehouse storage and real-time ETL throughout the system. First, User input is gathered via the Preferences dashboard on the web app's user interface. This user input is used to query school names from the US Department of Education CollegeScorecard database through an established GET API. The query then returns schools that fit within the user's given preferences. Again, the user provides input by selecting schools from the list which they wish to know more about.
+
+At this point, there are two possible pathways. First, the data warehouse (BigQuery) is checked for the requested summaries. If the school's reviews have already been fetched and summarized, then the data is fetched directly from the cloud storage. However, if the data doesn't exist yet, the data is generated on the spot through the following ETL process:
+
+1. Student reviews are retrieved from the school's evaluation page on Rate My Professor
+2. The reviews are classified as either "positive" or "negative" by a trained sentiment analyses LSTM
+3. The classified reviews are saved to a reviews data table in the data warehouse
+4. OpenAI API's GPT-3.5 Turbo is used to generate summaries of each review grouping
+5. The generated summaries are saved to a Summaries data table in the warehouse (along with a unique ID that links the summaries to the source reviews in the Reviews table)
+6. Now, the web app attempts to fetch the reviews from the warehouse once again
+7. Finally, the summaries are displayed to the user outlining the main pros and cons about the college
+
+The following (low fidelity) diagram shows the pipeline:
 
 ![IMG_0381](https://github.com/taliamora/CollegeExplorer/assets/97256085/e348ffe9-3297-4a38-91c8-063ed6baf669)
 

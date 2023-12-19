@@ -14,7 +14,6 @@ import pandas as pd
 
 from RateMyProfessor.rmp_api.university import University
 
-
 with open(os.path.join(os.path.dirname(__file__), "json/header.json"), 'r') as f:
     headers = json.load(f)
 
@@ -43,6 +42,9 @@ def get_uni_by_name(school_name: str, most_reviews = False):
     else:
         if schools:
             return schools[0]
+        elif school_name.startswith("The "):
+            school_name = school_name.lstrip("The ")
+            return get_uni_by_name(school_name)
         else:
             return None
 
@@ -57,6 +59,7 @@ def get_unis_by_name(school_name: str):
     :param school_name: The school's name.
     :return: List of schools that match the school name. If no schools are found, this will return an empty list.
     """
+    
     school_name.replace(' ', '+')
     url = "https://www.ratemyprofessors.com/search/schools?q=%s" % school_name
     page = requests.get(url)
@@ -78,8 +81,10 @@ def get_schools_reviews(school, output="lists"):
     comments = []
     ratings = []
     if type(school) == str:
-         school = get_uni_by_name(school, most_reviews=True)
-    reviews = school.get_reviews()
+         uni = get_uni_by_name(school, most_reviews=False)
+    else:
+        uni = school
+    reviews = uni.get_reviews()
     for post in reviews:
         txt = post.comment
         score = post.rating
@@ -93,3 +98,4 @@ def get_schools_reviews(school, output="lists"):
         return df
     elif output == "lists":
         return comments, ratings
+    

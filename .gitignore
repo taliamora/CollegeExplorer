@@ -1,5 +1,7 @@
 # Ignore all text files in the Keys folder
 Keys/*.txt
+Keys/*.json
+Keys/*.toml
 
 # Ignore random scratch-work files
 RateMyProfessor/examples/
@@ -7,3 +9,5 @@ another_folder/
 
 RateMyProfessor/rmp_api/__pycache__/
 .ipynb_checkpoints/
+
+DB/__pycache__/

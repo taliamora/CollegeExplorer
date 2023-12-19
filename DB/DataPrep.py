@@ -6,7 +6,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 # Clean up reviews
 def prep_data(df, labels=True, n= None, save=False, save_name='PreProcessed_Data.csv'):
-    df = df[df.Reviews.isna() == False]
+    #df = df[df.Reviews.isna() == False]
     df.Reviews = df.Reviews.astype(str)
     df = df[df['Reviews'].map(len) > 10] # Remove very short reviews (1-2 words)
     

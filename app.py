@@ -4,13 +4,11 @@ import numpy as np
 from io import StringIO
 import requests
 import json
-import pickle
-from tensorflow.keras.models import load_model
-import RateMyProfessor.rmp_api
-from RateMyProfessor.rmp_api import get_schools_reviews, get_uni_by_name
-from DataPrep import PreProcess, prep_data
 import os
 from openai import OpenAI
+from google.cloud import bigquery
+from google.oauth2 import service_account
+from DB.gcp_warehouse import fetch_summaries
 
 # Initialize session state variables
 if 'message' not in st.session_state:
@@ -19,14 +17,13 @@ if 'message' not in st.session_state:
 if 'edited_df' not in st.session_state:
     st.session_state.edited_df = pd.DataFrame()
 
-if 'NN_status' not in st.session_state:
-    st.session_state.NN_status = "- - -"
 
 if 'selected_list' not in st.session_state:
     st.session_state.selected_list = []
 
-if 'summaries' not in st.session_state:
-    st.session_state.summaries = []
+if 'sort' not in st.session_state:
+    st.session_state.sort = "asc"
+
 
 if 'should_summarize' not in st.session_state:
     st.session_state.should_summarize = False
@@ -34,17 +31,24 @@ if 'should_summarize' not in st.session_state:
 if "edflg" not in st.session_state:
     st.session_state.edflg = False
 
+if "cost_flag" not in st.session_state:
+    st.session_state.cost_flag = False
+
 
 # Load dataset
 pref = pd.read_csv("preference_key.csv")
 
+### GET SECRET ENVIRONMENT VARIABLES
+KEY = st.secrets['SCORECARD_API_KEY']
+
 # Connect to OpenAI
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
-client = OpenAI()
+OpenAI_client = OpenAI()
 
-# Load Models
-Tokenizer = pickle.load(open("SentimentAnalysis/SentimentAnalysisTokenizer.pkl", 'rb'))
-SentimentModel = load_model("SentimentAnalysis/best_model.h5")
+# Connect to BigQuery Warehouse
+credentials = service_account.Credentials.from_service_account_info(st.secrets['SERVICE_ACCOUNT_KEY'])
+GCP_client = bigquery.Client(credentials=credentials)
+
 
 # Streamlit title
 #def main_page():
@@ -81,16 +85,16 @@ select_region = st.sidebar.multiselect('Setting/Degree of Urbanization', pref[pr
 st.sidebar.header('Institution Characteristics', divider="grey")
 st.sidebar.write("This section contains charactersistics of colleges & their programs")
 
-
 # Profit/Public/Private
-select_control = st.sidebar.multiselect('Institution Type', pref[pref['VAR']=="CONTROL"].LABEL)
+multiselect_control = st.sidebar.multiselect('Institution Type', pref[pref['VAR']=="CONTROL"].LABEL, disabled = st.session_state.cost_flag)
 
 
 # Admission
 if st.sidebar.toggle('Filter based on Acceptance Rate', value=False):
     Admission = st.sidebar.slider('Admission Rate', 0, 100, 0, help="Select a MINIMUM rate of acceptance")
     st.sidebar.write(f'***College accepts at least **{Admission}%** of applicants***')
-    admission = f"{Admission}.."
+    rate = Admission/100
+    admission = f"{rate}.."
 else:
     admission = None
 
@@ -99,27 +103,33 @@ else:
 # Degrees
 select_degree = st.sidebar.multiselect('Highest Degree Type Offered', pref[pref['VAR']=="HIGHDEG"].LABEL)
 
-
+def change_control():
+    st.session_state.cost_flag = not st.session_state.cost_flag
 
 # Cost
-if st.sidebar.toggle('Filter based on Tuition Cost', value=False):
+if st.sidebar.toggle('Filter based on Tuition Cost', value=False, on_change=change_control):
+    radio_control = st.sidebar.radio('Institution Type', pref[pref['VAR']=="CONTROL"].LABEL, disabled= not st.session_state.cost_flag)
+
     Cost = st.sidebar.slider(
         'Specify a maximum acceptable tuition cost (in Thousands of Dollars)',
         0, 100, 50, help="Values based on approximate cost of tuition & fees for 1 academic year (assuming out of state tuition)")
     st.sidebar.write(f'Annual Cost of Tuition < ${Cost}K')
     cost = 1000*Cost
-    if "Public" in select_control:
+    if radio_control=="Public":
         cost_pub = f"..{cost}"
     else:
         cost_pub = None
-    if "Private nonprofit" in select_control or "Private for-profit" in select_control:
+    if radio_control == "Private nonprofit" or radio_control == "Private for-profit":
         cost_priv = f"..{cost}"
     else:
         cost_priv = None
+
+    select_control = [radio_control]
 else:
     cost_priv = None
     cost_pub = None
-    
+    select_control = multiselect_control
+
     
 
 # SAT
@@ -141,8 +151,15 @@ if st.sidebar.checkbox('Yes'):
 else:
     select_religion = None
 
+
+# Gender
+st.sidebar.write("\nAre you looking for a Gender-Specific Institution?")
+men_toggle = st.sidebar.toggle("Men Only", value=False)
+women_toggle = st.sidebar.toggle("Women Only", value=False)
+
 # Minority Serving
 st.sidebar.write("Are you looking for a college that serves a particular minority group (MSI)?")
+st.sidebar.markdown(":red[NOTE: Select at most 1 of the following categories at a time to help increase search robustness]")
 black_serving = st.sidebar.toggle("Historically Black College & University", value=False)
 ALHI_serving = st.sidebar.toggle("Alaska Native & Native Hawaiian Serving Institutions", value=False)
 tribal_serving = st.sidebar.toggle("Tribal College & University", value=False)
@@ -150,17 +167,6 @@ AANHPI_serving = st.sidebar.toggle("AANAPISI", value=False, help="Asian American
 hispanic_serving = st.sidebar.toggle("HSI", value=False, help= "Hispanic-Serving Institutions")
 native_serving = st.sidebar.toggle("Native American Non-Tribal Institutions", value=False)
 
-# Gender
-st.sidebar.write("\nAre you looking for a Gender-Specific Institution?")
-men_toggle = st.sidebar.toggle("Men Only", value=False)
-women_toggle = st.sidebar.toggle("Women Only", value=False)
-
-### ADD FEATURE: INTEGER BOX FOR NUMBER OF RESULTS TO FETCH
-num_schools = 20
-
-### NEXT STEPS FOR SEARCHING: 
-    #  1. Currently, only gets first 20 (change page number num_schools)
-    #  2. SORT RESULTS
 
 #### GET RECCOMENDATIONS
 # Build callback function (called when button is clicked)
@@ -188,8 +194,8 @@ def get_Recommendations():
             elif values == True:
                 query_vals = "1"
             QUERY += param+"="+query_vals+"&"
-    KEY = st.secrets['SCORECARD_API_KEY']
-    CollegeScorecardAPI = f"https://api.data.gov/ed/collegescorecard/v1/schools.json?{QUERY}fields=school.name&api_key={KEY}"
+    SORT = st.session_state.sort
+    CollegeScorecardAPI = f"https://api.data.gov/ed/collegescorecard/v1/schools.json?{QUERY}fields=school.name&per_page={NUM}&sort=school.name:{SORT}&api_key={KEY}"
     #CollegeScorecardAPI
     cs_data = requests.get(CollegeScorecardAPI)
     results = json.loads(cs_data.text)["results"]
@@ -207,7 +213,26 @@ def btn_callbk():
     #st.session_state.selected_list
 
 
-st.button("**Get Colleges**", type="primary", on_click=get_Recommendations)
+
+def set_sort():
+    if order == "Ascending":
+        st.session_state.sort = "asc"
+    elif order == "Descending":
+        st.session_state.sort = "desc"
+
+col1, col2, col3 = st.columns([0.33, 0.25, 0.33])
+with col1:
+    st.button("**Get Colleges**", type="primary", on_click=get_Recommendations)
+
+### NUMBER OF RESULTS TO FETCH & SORTING ORDER
+with col2:
+    NUM = st.number_input("Maximum Results Returned:", value=20, placeholder="Type a number...")
+
+with col3:
+    order = st.radio("Sort Results:", 
+    ["Ascending", "Descending"],
+    captions = ["A→Z", "Z→A"],
+    on_change = set_sort)
 
 
 def build_query_output():  
@@ -254,75 +279,7 @@ if st.session_state.message == "Recommendations Gotten":
     st.button("***Clear Selected***", type="secondary", on_click=reset_selection)
     st.markdown("##### **Next, choose a few of the resulting schools to find out a bit more! Select 1-5 schools to read about the PRO's and CON's according to the student body. Reviews are collected from RateMyProfessor.com, sectioned into positive and negative groupings and then summarized**")
 
-    def classify_reviews(school):
-        st.session_state.NN_status = f"Gathering reviews for {school}..."
-        rev_df = get_schools_reviews(school, output="dataframe")
-        
-        rev_df = prep_data(rev_df, labels=False, save=False,)
-        x_test = np.array(rev_df.Reviews)
-        # Tokenize & Pad
-        x_test_padded = PreProcess(x_test, Tokenizer)
-
-        # Classify Reviews
-        # Sentiment Analyses Model
-        st.session_state.NN_status = "Classifying Reviews' Sentiment..."
-        predictions = SentimentModel.predict([x_test_padded])
-        # Get just the numeric label predictions for test data
-        predictions[predictions > .5] = 1
-        predictions[predictions <= .5] = 0
-        predicted_labels = np.squeeze(predictions)
-        
-        zipped = zip(x_test, predicted_labels)
-        positive = [x for x, label in zipped if label == 1]
-        negative = [x for x, label in zipped if label == 0]
-
-        return positive, negative
-
-
-    def get_summary(reviews, sentiment, OpenAI_client):
-        response = OpenAI_client.chat.completions.create(
-            model = "gpt-3.5-turbo",
-            messages=[
-                {'role':'system', 'content': f"Summarize the list of reviews into a single paragraph that highlights the {sentiment} aspects of the school"},
-                {'role': 'user', 'content': str(reviews)}
-            ])
-        return response.choices[0].message.content
-
-
-    
-    def Summarize(schools):
-        # Initialize progress bar
-        progress_bar = st.progress(0)
-        total = len(schools)
-        for i, uni in enumerate(schools):
-            st.text(f"Fetching Reviews for {uni}...")
-            # Update the progress bar
-            progress = int((i + 1) / total * 100)
-            progress_bar.progress(progress)
-            for school in schools:
-                uni = get_uni_by_name(school)
-                if uni is None:
-                    print("Unfortunately, {uni} doesn't seem to be in the reviews database 😢")
-                    print("Moving to next school")
-                    pass
-                else:
-                # Get Reviews & Split on Sentiment
-                    st.text(f"Classifying Reviews' Sentiment...")
-                    positive, negative = classify_reviews(uni)
-                # Feed to summarizer
-                    st.text(f"Generating summaries for {uni}...")
-                    if positive == []:
-                        positive = negative
-                    elif negative == []:
-                        negative = positive
-                    pos_sum = get_summary(positive, "positive", client)
-                    neg_sum = get_summary(negative, "negative", client)
-                    st.session_state.summaries.append([uni, pos_sum, neg_sum])
-        # Complete the progress bar
-        st.text(f"Complete!")
-        progress_bar.progress(100)
-
-
+   
 
     if st.session_state.selected_list != []:
 
@@ -331,21 +288,34 @@ if st.session_state.message == "Recommendations Gotten":
 
         if st.session_state.should_summarize:
             st.session_state.should_summarize = False  # Reset the flag immediately
-            st.session_state.summaries = []  # Clear previous summaries
-            Summarize(st.session_state.selected_list)  # Summarize the new selection
-
-            for summary in st.session_state.summaries:
-                uni, pos_sum, neg_sum = summary
-                st.divider()
-                st.markdown(f"## ***:blue[{uni}]***")
-                st.markdown(f'''
-                    *:green[Positive Aspects:]* 
-                            {pos_sum}]
-
-
-                    *:red[Negative Aspects:]*
-                            {neg_sum}]
-                    ''')
-
+            schools = st.session_state.selected_list
+            # Initialize progress bar
+            progress_bar = st.progress(0)
+            total = len(schools)
+            for i, school in enumerate(schools):
+                st.text(f"Fetching Reviews for {school}...")
+                message, pos_sum, neg_sum = fetch_summaries(school, OpenAI_client, GCP_client)
+                if not message:
+                    # Display Summaries
+                    st.divider()
+                    st.markdown(f"## ***:blue[{school}]***")
+                    st.markdown(f'''
+                        *:green[Positive Aspects:]* 
+                                {pos_sum}]
 
 
+                        *:red[Negative Aspects:]*
+                                {neg_sum}]
+                        ''')
+                else:
+                    st.text(message)
+                
+                # Update the progress bar
+                progress = int((i + 1) / total * 100)
+                progress_bar.progress(progress)
+            # Complete the progress bar
+            st.markdown("#### *Complete!*")
+            progress_bar.progress(100)
+
+
+#https://api.data.gov/ed/collegescorecard/v1/schools.json?school.operating=1&cost.avg_net_price.public__range=..80000&cost.avg_net_price.private__range=..80000&fields=school.name&api_key=kiAstPJVUqbuRNL9czkNqb18NWY0Rb3e7zK6slpq

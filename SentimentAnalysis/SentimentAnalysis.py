@@ -31,7 +31,7 @@ nltk.download('punkt')
 from nltk.tokenize import word_tokenize
 
 from RateMyProfessor.rmp_api import get_schools_reviews
-from DataPrep import prep_data, PreProcess
+from DB.DB.DataPrep import prep_data, PreProcess
 
 
 path1 = "/Course Buddy Project/"

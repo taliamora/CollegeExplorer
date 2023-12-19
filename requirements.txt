@@ -10,4 +10,5 @@ seaborn
 matplotlib
 scikit-learn
 google-cloud-bigquery
+torch
 transformers
